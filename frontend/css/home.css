@@ -1,0 +1,193 @@
+*{
+    box-sizing: border-box;
+}
+html{
+    font-size:62.5%;
+}
+body{
+    font-size:1.6rem;
+    font-family:Montserrat, serif;
+    background: #e6f0ff;
+}
+a{
+    text-decoration: none;
+}
+.content{
+    width: 1110px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* header*/
+.header{
+    height: 100vh;
+    position: relative;
+}
+.navbar{
+    display: flex;
+    align-items: center;
+    padding-top: 30px;
+}
+.navbar ul{
+    display: flex;
+    margin-left: 50px;
+}
+.navbar .actions{
+    margin-left: auto;
+    
+}
+.navbar img{
+    width: 100px;
+    height: 80px;
+    border-radius: 50%;
+
+}
+.navbar ul a{
+    font-weight: 500;
+    font-size: 1.4rem;
+    color:#4f5361;
+    padding: 8px 14px;
+}
+.btn{
+    display: inline-block;
+    font-weight: 500;
+    font-size: 1.4rem;
+    color:#ffff;
+    padding:18px 40px;
+    background-color: #4f5361;
+    border-radius: 999px;
+    min-width: 98px;
+    margin-left: 10px;
+}
+.hero{
+    margin-top: 130px;
+   
+
+}
+.hero .info{
+    width: 51%;
+}
+.hero .sub-title{
+    font-weight: 500;
+    font-size: 1.8rem;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    color: #687619;
+}
+.hero .title{
+    font-weight: 700;
+    font-size: 4.5rem;
+    line-height: 1.19;
+    color: #687619;
+
+}
+.hero .desc{
+    font-weight: 500;
+    font-size: 1.8rem;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    color: #687619;
+    margin-bottom: 20px;
+
+}
+.hero-img{
+    position: absolute;
+    right: 65px;
+    bottom: 0;
+    width: 600px;
+    height: 600px;
+    border-radius: 10%;
+}
+
+
+/*  ==== quảng cáo */
+/* CSS cho Carousel */
+.carousel {
+    margin-left: 150px;
+    margin-top: 150px;
+    position: relative;
+    width: 90%;
+    height: 90%; /* Chiều cao vùng carousel */
+    overflow: hidden;
+}
+
+.carousel-image {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.carousel-image.active {
+    opacity: 1; /* Chỉ hình ảnh đang active được hiển thị */
+}
+
+/* footer */
+.footer1{
+    
+    border-bottom: #ddd solid 1px;
+    height: 34px;
+    text-align: center;
+    padding-top: 15px;
+    white-space: nowrap;
+  
+}
+.footer2{
+    width: 1020px;
+    height: 100px;
+    margin: 30px auto;
+    font-size: 12px;
+    color: #555;
+    line-height: 150%;
+}
+.footer3{
+    width: 1020px;
+    height: 80px;
+    margin: 0 auto;
+    position: relative;
+    border-top: #ddd solid 1px;
+}
+.footer4{
+    background: #333;
+    height: 80px;
+}
+.footer1 a{
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0 14px;
+    font-size: 12px;
+    color: #555;
+    height: 12px;
+    
+}
+.footer2 .logo1{
+    float: left;
+    width: 150px;
+    color: #555;
+    font-size: 30px;
+}
+.footer2 .footer-content{
+    float: left;
+    width: 260px;
+}
+.footer2 .footer-info{
+    float: left;
+    width: 260px;
+}
+.footer2 strong{
+    font-size: 12px;
+    font-weight: 700;
+}
+.footer2 em{
+    font-size: 20px;
+    font-weight: 700;
+}
+.abcd .abc{ 
+    padding: 10px 10px 20px 20px;
+    color:#ddd;
+}
+
+
+/* phần tiếp*/
+

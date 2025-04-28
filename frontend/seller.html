@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>판매자 페이지</title>
+  <link rel="stylesheet" href="css/seller.css">
+</head>
+<body>
+  <div class="seller-container">
+    <h2>📦 새 제품 추가</h2>
+    <form id="productForm">
+      <input type="text" id="name" placeholder="제품명" required>
+      <input type="text" id="price" placeholder="가격 (vd: 20000)" required>
+      <textarea id="description" placeholder="상품 설명"></textarea>
+      <input type="file" id="image" accept="image/jpeg, image/png" />
+      <select id="category" required>
+        <option value="">-- 종료선택 --</option>
+        <option value="1">채소</option>
+        <option value="2">과인</option>
+        <option value="3">고기</option>
+        <option value="4">해물</option>
+        <option value="5">건조 식품</option>
+      </select>
+      <button type="submit">제품추가</button>
+    </form>
+  </div>
+  <script src="js/seller.js"></script>
+</body>
+</html>

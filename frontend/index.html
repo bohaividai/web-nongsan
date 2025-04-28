@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>농사 web</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="top-bar">
+      <div class="logo">🛒 농사</div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="찾고 싶은 상품을 검색해보세요!...">
+        <button onclick="searchProducts()">🔍 검색</button>
+      </div>
+      <div class="user-actions" id="userActions">
+        <a href="login.html">로그인</a> |
+        <a href="signup.html">회원가입</a> |
+        <a href="seller.html">판매자 계정</a> |
+        <a href="cart.html">🛒 장바구니</a>
+      </div>
+    </div>
+    <div class="banner">
+      <img src="images/banner1.jpg" alt="Banner quảng cáo">
+    </div>
+  </header>
+
+  <main>
+    <h2>뛰어난 제품</h2>
+    <div id="productList" class="product-grid">
+    
+
+      <!-- Các sản phẩm sẽ được render từ JavaScript -->
+    </div>
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

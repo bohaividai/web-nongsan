@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>📝 회원가입</h2>
+    <form id="signupForm">
+      <input type="text" id="name" placeholder="이름" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="비밀번호" required>
+      <select id="role" required>
+        <option value="">-- 역할 --</option>
+        <option value="buyer">사는 사람</option>
+        <option value="seller">파는 사람</option>
+      </select>
+      <button type="submit">회원가입</button>
+      <p>이미 계정이 있습니까? <a href="login.html">로그인</a></p>
+    </form>
+  </div>
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>장바구니</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div style="text-align:right; padding: 20px 50px;">
+        <button onclick="window.location.href='index.html'"
+          style="background:#007bff; color:white; padding:8px 16px; border:none; border-radius:6px; font-weight:bold;">
+          ⬅️ 계속 쇼핑하기
+        </button>
+      </div>
+  <h1 style="text-align:center; margin: 30px 0;">🛒 귀하의 장바구니</h1>
+  <div id="cartContainer" style="padding: 0 50px;"></div>
+
+  <div style="text-align:center; margin: 30px;">
+    <button onclick="clearCart()" style="background:red;color:white;padding:10px 20px;border:none;border-radius:6px;">🗑 모두 지우기</button>
+    <button onclick="checkout()" style="background:green;color:white;padding:10px 20px;border:none;border-radius:6px;">💳 지불하다</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      alert("장바구니를 보려면 로그인하세요.");
+      window.location.href = 'login.html';
+    }
+
+    const cartKey = `cart_${user.id}`;
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      const container = document.getElementById('cartContainer');
+
+      if (cart.length === 0) {
+        container.innerHTML = "<p>🛒 장바구니가 비어 있습니다.</p>";
+        return;
+      }
+
+      let html = `<table style="width:100%; border-collapse: collapse;">
+        <tr>
+          <th>사진</th><th>제품</th><th>가격</th><th>수량</th><th>총</th><th>행동</th>
+        </tr>`;
+
+      let total = 0;
+
+      cart.forEach((item, index) => {
+  const priceNum = Number(item.price.replace(/[^\d]/g, ''));
+  const itemTotal = item.quantity * priceNum;
+  total += itemTotal;
+
+  // 👇 xử lý ảnh đúng
+  const imageUrl = item.image.startsWith('http')
+    ? item.image
+    : `http://localhost:3000/uploads/${item.image}`;
+
+  html += `
+    <tr style="text-align:center; border-top:1px solid #ccc;">
+      <td><img src="${imageUrl}" width="60"></td>
+      <td>${item.name}</td>
+      <td>${item.price}</td>
+      <td>${item.quantity}</td>
+      <td>${itemTotal.toLocaleString()}đ</td>
+      <td><button onclick="removeItem(${index})" style="background:#ff4d4f;color:white;border:none;border-radius:4px;padding:5px 10px;">지우기</button></td>
+    </tr>
+  `;
+});
+
+
+      html += `<tr style="text-align:right;">
+        <td colspan="4"><strong>함께:</strong></td>
+        <td colspan="2"><strong style="color:green;">${total.toLocaleString()}đ</strong></td>
+      </tr></table>`;
+
+      container.innerHTML = html;
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      cart.splice(index, 1);
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      loadCart();
+    }
+
+    function clearCart() {
+      if (confirm("쇼핑 카트 전체를 삭제하시겠습니까??")) {
+        localStorage.removeItem(cartKey);
+        loadCart();
+      }
+    }
+
+    async function checkout() {
+  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  if (cart.length === 0) return alert("장바구니가 비어있습니다!");
+
+  const total_price = cart.reduce((sum, item) => {
+    const priceNum = Number(item.price.replace(/[^\d]/g, ''));
+    return sum + (priceNum * item.quantity);
+  }, 0);
+
+  try {
+    const res = await fetch('http://localhost:3000/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: user.id,
+        items: cart.map(item => ({
+          id: item.id,
+          quantity: item.quantity,
+          price: Number(item.price.replace(/[^\d]/g, ''))
+        })),
+        total_price
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("✅ 주문 성공!");
+      localStorage.removeItem(cartKey);
+      loadCart();
+      window.location.href = "index.html";
+    } else {
+      alert("❌ Lỗi: " + data.message);
+    }
+  } catch (err) {
+    console.error("연결 오류:", err);
+    alert("❌ 서버 연결 오류!");
+  }
+}
+
+
+    loadCart();
+  </script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+const path = require('path'); // thêm dòng này ở đầu file server.js
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -13,6 +14,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
+
+// Dùng middleware express static
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Route bắt tất cả đường dẫn trả về index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 
 // Phục vụ file frontend (html, css, js)

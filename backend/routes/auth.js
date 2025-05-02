@@ -27,13 +27,13 @@ router.post("/signup", async (req, res) => {
         [username, email, hashedPassword, role],
         (err, result) => {
           if (err) {
-            console.error("Lỗi khi thêm:", err);
+            console.error("❌ Lỗi INSERT:", err); // <== DÒNG NÀY QUAN TRỌNG
             return res.status(500).json({ message: "Lỗi khi thêm người dùng vào CSDL" });
           }
-
           res.status(200).json({ message: "Đăng ký thành công!" });
         }
       );
+      
     });
   } catch (err) {
     console.error("Lỗi server:", err);

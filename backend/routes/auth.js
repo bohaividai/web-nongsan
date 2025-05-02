@@ -6,30 +6,39 @@ const db = require('../db');
 require('dotenv').config();
 
 // Đăng ký
-// Đăng ký
-// ĐĂNG KÝ
 router.post("/signup", async (req, res) => {
   const { username, email, password, role } = req.body;
 
-  // Kiểm tra trùng username hoặc email
-  db.query("SELECT * FROM users WHERE username = ? OR email = ?", [username, email], async (err, results) => {
-    if (err) return res.status(500).json({ message: "Lỗi truy vấn CSDL" });
+  try {
+    // Kiểm tra username hoặc email đã tồn tại
+    db.query("SELECT * FROM users WHERE username = ? OR email = ?", [username, email], async (err, results) => {
+      if (err) return res.status(500).json({ message: "Lỗi truy vấn CSDL" });
 
-    if (results.length > 0) {
-      return res.status(400).json({ message: "Tài khoản đã tồn tại" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    db.query(
-      "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
-      [username, email, hashedPassword, role],    
-      (err, result) => {
-        if (err) return res.status(500).json({ message: "Lỗi khi thêm người dùng vào CSDL" });
-        res.json({ message: "Đăng ký thành công!" });
+      if (results.length > 0) {
+        return res.status(400).json({ message: "Tài khoản đã tồn tại!" });
       }
-    );
-  });
+
+      // Hash mật khẩu
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Chèn người dùng mới
+      db.query(
+        "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
+        [username, email, hashedPassword, role],
+        (err, result) => {
+          if (err) {
+            console.error("Lỗi khi thêm:", err);
+            return res.status(500).json({ message: "Lỗi khi thêm người dùng vào CSDL" });
+          }
+
+          res.status(200).json({ message: "Đăng ký thành công!" });
+        }
+      );
+    });
+  } catch (err) {
+    console.error("Lỗi server:", err);
+    res.status(500).json({ message: "Lỗi máy chủ" });
+  }
 });
 
 

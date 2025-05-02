@@ -23,7 +23,7 @@ router.post("/signup", async (req, res) => {
 
     db.query(
       "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
-      [username, email, hashedPassword, role],
+      [username, email, hashedPassword, role],    
       (err, result) => {
         if (err) return res.status(500).json({ message: "Lỗi khi thêm người dùng vào CSDL" });
         res.json({ message: "Đăng ký thành công!" });

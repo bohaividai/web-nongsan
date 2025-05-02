@@ -6,38 +6,40 @@ const db = require('../db');
 require('dotenv').config();
 
 // Đăng ký
-router.post('/signup', async (req, res) => {
-  const { name, email, password, role } = req.body;
+// Đăng ký
+router.post("/signup", async (req, res) => {
+  const { username, password, role } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  db.query('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', 
-    [name, email, hashedPassword, role], (err) => {
-      if (err) return res.status(500).json({ message: 'Email đã tồn tại hoặc lỗi DB' });
-      res.json({ message: 'Đăng ký thành công!' });
-  });
+  db.query(
+    "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+    [username, hashedPassword, role],
+    (err, result) => {
+      if (err) return res.status(500).json({ message: "Tài khoản đã tồn tại hoặc lỗi DB" });
+      res.json({ message: "Đăng ký thành công!" });
+    }
+  );
 });
 
 // Đăng nhập
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
+// Đăng nhập
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
 
-  db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
+  db.query("SELECT * FROM users WHERE username = ?", [username], async (err, results) => {
     if (err || results.length === 0) {
-      return res.status(401).json({ message: 'Tài khoản không tồn tại' });
+      return res.status(401).json({ message: "Tài khoản không tồn tại!" });
     }
 
     const user = results[0];
-    const valid = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!valid) return res.status(401).json({ message: 'Sai mật khẩu' });
+    if (!isMatch) return res.status(401).json({ message: "Sai mật khẩu!" });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-    res.json({
-      token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
-    });
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    res.json({ token, user });
   });
 });
+
 
 module.exports = router;

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/products');
+      const response = await fetch('https://web-nongsan.onrender.com/api/admin/products');
       if (!response.ok) {
         throw new Error('Lỗi khi tải danh sách sản phẩm');
       }

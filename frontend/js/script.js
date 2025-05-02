@@ -2,7 +2,7 @@
 let currentProducts = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('http://localhost:3000/api/products')
+  fetch('https://web-nongsan.onrender.com/api/products')
     .then(res => res.json())
     .then(data => {
       currentProducts = data;

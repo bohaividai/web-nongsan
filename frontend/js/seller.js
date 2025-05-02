@@ -42,7 +42,7 @@ if (!allowedTypes.includes(imageFile.type)) {
     formData.append('seller_id', seller_id);
 
     try {
-      const response = await fetch('http://localhost:3000/api/products', {
+      const response = await fetch('https://web-nongsan.onrender.com/api/products', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

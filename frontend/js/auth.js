@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:3000/api/auth';
+const apiUrl = 'https://web-nongsan.onrender.com/api/auth';
 
 document.addEventListener('DOMContentLoaded', () => {
   const signupForm = document.getElementById('signupForm');

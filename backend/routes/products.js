@@ -43,7 +43,7 @@ router.post('/', upload.single('image'), (req, res) => {
 // Lấy sản phẩm đã được duyệt (hiển thị ở trang index.html) – không cần verify
 router.get('/', (req, res) => {
   const sql = `
-    SELECT p.*, c.name AS category_name, u.name AS seller_name
+    SELECT p.*, c.name AS category_name, u.username AS seller_name
     FROM products p
     JOIN categories c ON p.category_id = c.id
     JOIN users u ON p.seller_id = u.id
@@ -63,7 +63,7 @@ router.get('/', (req, res) => {
 // Lấy sản phẩm chờ duyệt (cho admin duyệt) – cần verify
 router.get('/pending', verify, (req, res) => {
   const sql = `
-    SELECT p.id, p.name, p.price, u.name AS seller_name
+    SELECT p.id, p.name, p.price, u.username AS seller_name
     FROM products p
     JOIN users u ON p.seller_id = u.id
     WHERE p.approved = false

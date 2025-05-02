@@ -8,18 +8,19 @@ require('dotenv').config();
 // Đăng ký
 // Đăng ký
 router.post("/signup", async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, email, password, role } = req.body; // <-- thêm email vào đây!
   const hashedPassword = await bcrypt.hash(password, 10);
 
   db.query(
     "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
-    [username, email, hashedPassword, role],  
+    [username, email, hashedPassword, role],
     (err, result) => {
       if (err) return res.status(500).json({ message: "Tài khoản đã tồn tại hoặc lỗi DB" });
       res.json({ message: "Đăng ký thành công!" });
     }
   );
 });
+
 
 // Đăng nhập
 // Đăng nhập

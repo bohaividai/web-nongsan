@@ -1,67 +1,80 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const db = require('../db');
-require('dotenv').config();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const db = require("../db");
+require("dotenv").config();
 
-// Đăng ký
+// ✅ ĐĂNG KÝ
 router.post("/signup", async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { name, email, password, role } = req.body; // name từ frontend
+  const username = name;
 
   try {
-    // Kiểm tra username hoặc email đã tồn tại
+    // Kiểm tra trùng username hoặc email
     db.query("SELECT * FROM users WHERE username = ? OR email = ?", [username, email], async (err, results) => {
       if (err) return res.status(500).json({ message: "Lỗi truy vấn CSDL" });
 
       if (results.length > 0) {
-        return res.status(400).json({ message: "Tài khoản đã tồn tại!" });
+        return res.status(400).json({ message: "Tài khoản đã tồn tại" });
       }
 
-      // Hash mật khẩu
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Chèn người dùng mới
       db.query(
         "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
         [username, email, hashedPassword, role],
         (err, result) => {
           if (err) {
-            console.error("❌ Lỗi INSERT:", err); // <== DÒNG NÀY QUAN TRỌNG
+            console.error("❌ Lỗi INSERT:", err);
             return res.status(500).json({ message: "Lỗi khi thêm người dùng vào CSDL" });
           }
           res.status(200).json({ message: "Đăng ký thành công!" });
         }
       );
-      
     });
   } catch (err) {
-    console.error("Lỗi server:", err);
+    console.error("❌ Lỗi server:", err);
     res.status(500).json({ message: "Lỗi máy chủ" });
   }
 });
 
+// ✅ ĐĂNG NHẬP
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
 
+  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
+    if (err) return res.status(500).json({ message: "Lỗi truy vấn CSDL" });
 
-// Đăng nhập
-// Đăng nhập
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  db.query("SELECT * FROM users WHERE username = ?", [username], async (err, results) => {
-    if (err || results.length === 0) {
-      return res.status(401).json({ message: "Tài khoản không tồn tại!" });
+    if (results.length === 0) {
+      return res.status(401).json({ message: "Email không tồn tại" });
     }
 
     const user = results[0];
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) return res.status(401).json({ message: "Sai mật khẩu!" });
+    if (!isMatch) {
+      return res.status(401).json({ message: "Mật khẩu không đúng" });
+    }
 
-    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    res.json({ token, user });
+    // Tạo token JWT
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.status(200).json({
+      message: "Đăng nhập thành công!",
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+    });
   });
 });
-
 
 module.exports = router;

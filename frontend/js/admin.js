@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   async function approveProduct(productId) {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/products/${productId}/approve`, {
+      const response = await fetch(`https://web-nongsan.onrender.com/api/admin/products/${productId}/approve`, {
         method: 'PUT'
       });
       if (!response.ok) {

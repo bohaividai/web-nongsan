@@ -1,32 +1,47 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-      const response = await fetch('https://web-nongsan.onrender.com/api/products/pending');
+  try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          alert("Bạn chưa đăng nhập hoặc token đã hết hạn. Vui lòng đăng nhập lại.");
+          window.location.href = "/login.html";
+          return;
+      }
 
+      const response = await fetch('https://web-nongsan.onrender.com/api/products/pending', {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+          }
+      });
 
       if (!response.ok) {
-        throw new Error('Lỗi khi tải danh sách sản phẩm');
+          throw new Error("Lỗi khi tải danh sách sản phẩm");
       }
+
       const products = await response.json();
       const adminProductList = document.getElementById('adminProductList');
-  
+
       products.forEach(product => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${product.name}</td>
-          <td>${product.price}</td>
-          <td>${product.seller_name || ''}</td>
-          <td>
-            <button onclick="approveProduct(${product.id})">Duyệt</button>
-            <button onclick="deleteProduct(${product.id})">Xóa</button>
-          </td>
-        `;
-        adminProductList.appendChild(row);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${product.name}</td>
+              <td>${product.price}</td>
+              <td>${product.seller_name || ''}</td>
+              <td>
+                  <button onclick="approveProduct(${product.id})">Duyệt</button>
+                  <button onclick="deleteProduct(${product.id})">Xóa</button>
+              </td>
+          `;
+          adminProductList.appendChild(row);
       });
-    } catch (error) {
-      console.error(error);
-      alert('Không thể tải danh sách sản phẩm.');
-    }
-  });
+
+  } catch (error) {
+      console.error("Lỗi khi tải sản phẩm chờ duyệt:", error);
+      alert("Lỗi khi tải sản phẩm chờ duyệt. Xem console để biết chi tiết.");
+  }
+});
+
   
   async function approveProduct(productId) {
     try {

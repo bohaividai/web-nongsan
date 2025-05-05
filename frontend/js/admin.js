@@ -1,6 +1,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-      const response = await fetch('https://web-nongsan.onrender.com/api/admin/products');
+      const token = localStorage.getItem('token');
+const response = await fetch('https://web-nongsan.onrender.com/api/products/pending', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
       if (!response.ok) {
         throw new Error('Lỗi khi tải danh sách sản phẩm');
       }

@@ -1,11 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-      const token = localStorage.getItem('token');
-const response = await fetch('https://web-nongsan.onrender.com/api/products/pending', {
-  headers: {
-    'Authorization': `Bearer ${token}`
-  }
-});
+      const response = await fetch('https://web-nongsan.onrender.com/api/products/pending');
+
 
       if (!response.ok) {
         throw new Error('Lỗi khi tải danh sách sản phẩm');
@@ -50,7 +46,7 @@ const response = await fetch('https://web-nongsan.onrender.com/api/products/pend
   
   async function deleteProduct(productId) {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/products/${productId}`, {
+      const response = await fetch(`https://web-nongsan.onrender.com/api/admin/products/${productId}`, {
         method: 'DELETE'
       });
       if (!response.ok) {

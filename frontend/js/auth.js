@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Đăng nhập thành công!');
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = 'index.html';
+        window.location.href = 'home.html';
       } catch (error) {
         alert('Lỗi kết nối tới server.');
         console.error(error);

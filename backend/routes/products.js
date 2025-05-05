@@ -47,7 +47,7 @@ router.get('/', (req, res) => {
     FROM products p
     JOIN categories c ON p.category_id = c.id
     JOIN users u ON p.seller_id = u.id
-    WHERE p.approved = 0
+    WHERE p.approved = 1
     ORDER BY p.created_at DESC
   `;
 
@@ -61,12 +61,12 @@ router.get('/', (req, res) => {
 });
 
 // Lấy sản phẩm chờ duyệt (cho admin duyệt) – cần verify
-router.get('/pending', verify, (req, res) => {
+router.get('/pending', (req, res) => {
   const sql = `
     SELECT p.id, p.name, p.price, u.username AS seller_name
     FROM products p
     JOIN users u ON p.seller_id = u.id
-    WHERE p.approved = 0
+    WHERE p.approved = 1
     ORDER BY p.created_at DESC
   `;
 

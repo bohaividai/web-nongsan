@@ -54,7 +54,7 @@ if (!allowedTypes.includes(imageFile.type)) {
       alert(data.message);
 
       if (response.ok) {
-        window.location.href = 'index.html';
+        window.location.href = 'home.html';
       }
     } catch (error) {
       console.error('Lỗi khi thêm sản phẩm:', error);

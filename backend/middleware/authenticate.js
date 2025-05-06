@@ -9,7 +9,8 @@ function authenticate(req, res, next) {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ message: "Token không hợp lệ" });
-    req.user = user; // 🔥 BẠT BUỘC PHẢI CÓ DÒNG NÀY
+
+    req.user = user; // ✅ rất quan trọng
     next();
   });
 }

@@ -25,10 +25,12 @@ const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const adminProductRoutes = require('./routes/adminProducts');
 
+
+
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/admin-products', adminProductRoutes);
+app.use('/api/admin', adminProductRoutes);
 
 // Route kiểm tra server (tạm thời)
 app.get('/', (req, res) => {

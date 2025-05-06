@@ -48,24 +48,25 @@ async function approveProduct(productId) {
 
   try {
     const response = await fetch(`https://web-nongsan.onrender.com/api/admin/products/${productId}/approve`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
     });
 
     if (!response.ok) {
-      throw new Error('Lỗi khi duyệt sản phẩm');
+      throw new Error("Không thể duyệt sản phẩm");
     }
 
-    alert("Duyệt sản phẩm thành công!");
-    window.location.reload();
+    alert("Duyệt thành công!");
+    location.reload();
   } catch (error) {
     alert("Không thể duyệt sản phẩm.");
     console.error(error);
   }
 }
+
 
   
   async function deleteProduct(productId) {

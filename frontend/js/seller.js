@@ -1,65 +1,45 @@
-document.getElementById('product-form').addEventListener('submit', async function (e) {
+document.getElementById("productForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const name = document.querySelector('input[name="name"]').value;
   const price = document.querySelector('input[name="price"]').value;
-  const description = document.getElementById('description').value;
-  const quantity = document.getElementById('quantity').value;
-  const category_id = document.getElementById('category').value;
-  const imageFile = document.getElementById('image').files[0];
+  const description = document.querySelector('textarea[name="description"]').value;
+  const category_id = document.querySelector("select[name='category']").value;
+  const imageFile = document.getElementById("image").files[0];
 
   if (!imageFile) {
-    return alert('⚠️ Vui lòng chọn ảnh!');
+    alert("Vui lòng chọn ảnh sản phẩm.");
+    return;
   }
 
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("description", description);
+  formData.append("category_id", category_id);
+  formData.append("image", imageFile);
+
   try {
-    // 1. Upload ảnh lên server
-    const formData = new FormData();
-    formData.append('image', imageFile);
+    const token = localStorage.getItem("token"); // nếu bạn cần token để xác thực
 
-    const uploadRes = await fetch('/api/upload-image', {
-      method: 'POST',
-      body: formData
-    });
-
-    const uploadData = await uploadRes.json();
-
-    if (!uploadData.success) {
-      return alert('❌ Upload ảnh thất bại!');
-    }
-
-    const imageUrl = uploadData.imageUrl;
-
-    // 2. Gửi dữ liệu sản phẩm
-    const token = localStorage.getItem('token');
-
-    const productRes = await fetch('/api/products', {
-      method: 'POST',
+    const res = await fetch("https://web-nongsan.onrender.com/api/products", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        Authorization: `Bearer ${token || ""}`, // nếu có xác thực
       },
-      body: JSON.stringify({
-        name,
-        price,
-        description,
-        quantity,
-        category_id,
-        image: imageUrl
-      })
+      body: formData,
     });
 
-    const productData = await productRes.json();
+    const data = await res.json();
 
-    if (productData.success) {
-      alert('✅ Thêm sản phẩm thành công!');
-      window.location.reload();
+    if (res.ok) {
+      alert("Thêm sản phẩm thành công!");
+      location.reload();
     } else {
-      alert('❌ Thêm sản phẩm thất bại!');
+      alert("Lỗi: " + data.message);
     }
-
   } catch (err) {
-    console.error(err);
-    alert('❌ Lỗi máy chủ!');
+    console.error("Lỗi fetch:", err);
+    alert("Không thể kết nối đến server.");
   }
 });

@@ -3,7 +3,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const path = require('path');
-const multer = require('multer');
 
 
 
@@ -30,15 +29,14 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const adminProductRoutes = require('./routes/adminProducts');
-const uploadRoutes = require('./routes/upload');
-const upload = multer({ dest: 'uploads/' });
+
 
 // ✅ Sử dụng API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminProductRoutes);
-app.use('/api', uploadRoutes);
+
 
 // ✅ Trả về file index.html cho các route không khớp
 app.get('*', (req, res) => {

@@ -1,45 +1,40 @@
-document.getElementById("productForm").addEventListener("submit", async function (e) {
+document.getElementById("productForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.querySelector('input[name="name"]').value;
-  const price = document.querySelector('input[name="price"]').value;
-  const description = document.querySelector('textarea[name="description"]').value;
-  const category_id = document.querySelector("select[name='category']").value;
-  const imageFile = document.getElementById("image").files[0];
-
-  if (!imageFile) {
-    alert("Vui lòng chọn ảnh sản phẩm.");
-    return;
-  }
+  const name = document.querySelector('input[name="name"]').value.trim();
+  const price = document.querySelector('input[name="price"]').value.trim();
+  const description = document.querySelector('textarea[name="description"]').value.trim();
+  const image = document.querySelector('input[type="file"]').files[0];
+  const category_id = document.querySelector('select[name="category"]').value;
 
   const formData = new FormData();
   formData.append("name", name);
   formData.append("price", price);
   formData.append("description", description);
+  formData.append("image", image);
   formData.append("category_id", category_id);
-  formData.append("image", imageFile);
+
+  const token = localStorage.getItem("token");
 
   try {
-    const token = localStorage.getItem("token"); // nếu bạn cần token để xác thực
-
-    const res = await fetch("https://web-nongsan.onrender.com/api/products", {
+    const response = await fetch("https://web-nongsan.onrender.com/api/products", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token || ""}`, // nếu có xác thực
+        Authorization: `Bearer ${token}`,
       },
       body: formData,
     });
 
-    const data = await res.json();
+    const result = await response.json();
 
-    if (res.ok) {
-      alert("Thêm sản phẩm thành công!");
-      location.reload();
+    if (response.ok) {
+      alert("🟢 Thêm sản phẩm thành công. Chờ admin duyệt!");
+      document.getElementById("productForm").reset();
     } else {
-      alert("Lỗi: " + data.message);
+      alert("❌ Thêm sản phẩm thất bại: " + result.message);
     }
   } catch (err) {
-    console.error("Lỗi fetch:", err);
-    alert("Không thể kết nối đến server.");
+    console.error(err);
+    alert("❌ Lỗi kết nối máy chủ.");
   }
 });

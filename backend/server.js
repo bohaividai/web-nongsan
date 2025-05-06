@@ -29,6 +29,7 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const adminProductRoutes = require('./routes/adminProducts');
+app.use('/api/products', require('./routes/products'));
 
 
 // ✅ Sử dụng API routes
@@ -48,3 +49,4 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);
 });
+

@@ -15,50 +15,36 @@ const storage = multer.diskStorage({
     cb(null, filename);
   },
 });
+
 const upload = multer({ storage: storage });
 
 // Thêm sản phẩm mới (không cần verify, người bán thêm được)
 // Thêm sản phẩm mới dùng Imgur
-router.post('/', upload.single('image'), async (req, res) => {
-  const { name, price, description, category_id, seller_id } = req.body;
-  const imageFile = req.file;
-
-  if (!name || !imageFile) {
-    return res.status(400).json({ message: 'Thiếu dữ liệu sản phẩm' });
-  }
-
-  const fs = require('fs');
-  const axios = require('axios');
-  const imagePath = imageFile.path;
-  const imageBase64 = fs.readFileSync(imagePath, { encoding: 'base64' });
-
+router.post("/", verifyToken, upload.single("image"), async (req, res) => {
   try {
-    const imgurResponse = await axios.post('https://api.imgur.com/3/image', {
-      image: imageBase64,
-      type: 'base64'
-    }, {
-      headers: {
-        Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`
-      }
-    });
+    const { name, price, description, category_id } = req.body;
+    const image = req.file;
 
-    fs.unlinkSync(imagePath); // Xoá file sau khi upload
-    const imageUrl = imgurResponse.data.data.link;
+    if (!image) {
+      return res.status(400).json({ message: "Thiếu ảnh sản phẩm." });
+    }
 
-    const sql = `INSERT INTO products (name, price, description, image, category_id, seller_id, approved)
-                 VALUES (?, ?, ?, ?, ?, ?, false)`;
+    // Lưu ảnh vào uploads/
+    const filename = Date.now() + "-" + image.originalname;
+    const fs = require("fs");
+    fs.writeFileSync(`uploads/${filename}`, image.buffer);
 
-    db.query(sql, [name, price, description, imageUrl, category_id, seller_id], (err, result) => {
-      if (err) {
-        console.error('❌ Lỗi khi thêm sản phẩm:', err);
-        return res.status(500).json({ message: 'Lỗi khi thêm sản phẩm.' });
-      }
-      res.json({ message: '✅ Thêm sản phẩm thành công! Chờ quản lý duyệt.' });
-    });
+    // Thêm sản phẩm vào DB
+    const [result] = await db.query(
+      `INSERT INTO products (name, price, description, image, category_id, seller_id, approved)
+       VALUES (?, ?, ?, ?, ?, ?, 0)`,
+      [name, price, description, filename, category_id, req.user.id]
+    );
 
-  } catch (error) {
-    console.error('❌ Upload ảnh thất bại:', error);
-    return res.status(500).json({ message: 'Lỗi upload ảnh lên Imgur.' });
+    res.json({ message: "Đã thêm sản phẩm chờ duyệt." });
+  } catch (err) {
+    console.error("Lỗi thêm sản phẩm:", err);
+    res.status(500).json({ message: "Lỗi server." });
   }
 });
 

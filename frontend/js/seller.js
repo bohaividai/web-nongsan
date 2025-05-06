@@ -1,64 +1,56 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('productForm');
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user'));
+document.getElementById('productForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
 
-  if (!token || !user || user.role !== 'seller') {
-    alert('Bạn không có quyền truy cập!');
-    window.location.href = 'index.html';
+  const name = document.getElementById('name').value;
+  const price = document.getElementById('price').value;
+  const description = document.getElementById('description').value;
+  const category_id = document.getElementById('category').value;
+  const imageFile = document.getElementById('image').files[0];
+
+  if (!imageFile) {
+    alert("📷 사진을 업로드하세요!");
     return;
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  const formData = new FormData();
+  formData.append('image', imageFile);
 
-    const name = document.getElementById('name').value;
-    const price = parseFloat(document.getElementById('price').value);
-    const description = document.getElementById('description').value;
-    const category_id = parseInt(document.getElementById('category').value);
-    const seller_id = user.id;
-    const imageInput = document.getElementById('image');
-    const imageFile = imageInput.files[0];
+  try {
+    // 1. Upload ảnh lên Imgur
+    const imgurRes = await fetch('/api/upload-imgur', {
+      method: 'POST',
+      body: formData
+    });
+    const imgurData = await imgurRes.json();
 
-    
-if (!imageFile) {
-  alert('Vui lòng chọn ảnh sản phẩm!');
-  return;
-}
-
-const allowedTypes = ['image/jpeg', 'image/png'];
-if (!allowedTypes.includes(imageFile.type)) {
-  alert('Chỉ được chọn ảnh định dạng JPG hoặc PNG!');
-  return;
-}
-
-
-    const formData = new FormData();
-    formData.append('image', imageFile);
-    formData.append('name', name);
-    formData.append('price', price);
-    formData.append('description', description);
-    formData.append('category_id', category_id);
-    formData.append('seller_id', seller_id);
-
-    try {
-      const response = await fetch('https://web-nongsan.onrender.com/api/products', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
-
-      const data = await response.json();
-      alert(data.message);
-
-      if (response.ok) {
-        window.location.href = 'home.html';
-      }
-    } catch (error) {
-      console.error('Lỗi khi thêm sản phẩm:', error);
-      alert('Không thể kết nối tới máy chủ!');
+    if (!imgurData.imageUrl) {
+      alert("❌ 이미지 업로드 실패!");
+      return;
     }
-  });
+
+    // 2. Gửi sản phẩm lên server
+    const response = await fetch('/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        price,
+        description,
+        image: imgurData.imageUrl,
+        category_id,
+        seller_id: localStorage.getItem('userId') || 1 // fallback nếu chưa đăng nhập
+      })
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert("✅ 상품이 성공적으로 등록되었습니다!");
+      window.location.reload();
+    } else {
+      alert("❌ 등록 실패: " + result.message);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ 서버 오류 발생!");
+  }
 });

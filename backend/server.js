@@ -3,6 +3,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const path = require('path');
+const uploadImgurRoutes = require('./routes/uploadImgur');
+
+
 
 // ✅ Kết nối MySQL
 require('./db');
@@ -13,6 +16,7 @@ dotenv.config();
 // Middleware chung
 app.use(cors());
 app.use(bodyParser.json());
+
 
 // ✅ Static files từ frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -31,6 +35,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminProductRoutes);
+app.use('/api/upload-imgur', uploadImgurRoutes);
 
 // ✅ Trả về file index.html cho các route không khớp
 app.get('*', (req, res) => {

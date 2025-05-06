@@ -19,13 +19,18 @@ router.get('/', authenticate, (req, res) => {
 });
 
 // Duyệt sản phẩm
-router.put('/:id/approve', authenticate, (req, res) => {
-  const sql = 'UPDATE products SET approved = true WHERE id = ?';
-  db.query(sql, [req.params.id], (err, result) => {
-    if (err) return res.status(500).json({ message: 'Lỗi server' });
-    res.json({ message: 'Duyệt thành công' });
+router.put('/products/:id/approve', authenticate, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Không có quyền duyệt sản phẩm' });
+  }
+
+  const id = req.params.id;
+  db.query("UPDATE products SET approved = 1 WHERE id = ?", [id], (err, result) => {
+    if (err) return res.status(500).json({ message: "Lỗi duyệt sản phẩm" });
+    res.json({ message: "Duyệt thành công!" });
   });
 });
+
 
 // Xoá sản phẩm
 router.delete('/:id', authenticate, (req, res) => {

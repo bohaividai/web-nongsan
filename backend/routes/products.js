@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+const verifyToken = require("../middleware/verifyToken");
 const multer = require('multer');
 const path = require('path');
 const verify = require('../middleware/auth'); // ✅ phải có dòng này

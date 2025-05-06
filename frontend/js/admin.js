@@ -45,9 +45,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   async function approveProduct(productId) {
     try {
-      const response = await fetch(`https://web-nongsan.onrender.com/api/admin/products/${productId}/approve`, {
-        method: 'PUT'
-      });
+      const token = localStorage.getItem("token");
+
+await fetch(`https://web-nongsan.onrender.com/api/admin/products/${productId}/approve`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }
+});
+
       if (!response.ok) {
         throw new Error('Lỗi khi duyệt sản phẩm');
       }

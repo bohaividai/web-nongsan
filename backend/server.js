@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 // Serve static frontend files
 app.use('/', express.static('frontend'));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // nếu bạn có file ảnh tải lên
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); // nếu bạn có file ảnh tải lên
 
 // API Routes
 const authRoutes = require('./routes/auth');

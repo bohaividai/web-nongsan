@@ -1,56 +1,65 @@
-document.getElementById('productForm').addEventListener('submit', async function (e) {
+document.getElementById('product-form').addEventListener('submit', async function (e) {
   e.preventDefault();
 
-  const name = document.getElementById('name').value;
-  const price = document.getElementById('price').value;
+  const name = document.querySelector('input[name="name"]').value;
+  const price = document.querySelector('input[name="price"]').value;
   const description = document.getElementById('description').value;
+  const quantity = document.getElementById('quantity').value;
   const category_id = document.getElementById('category').value;
   const imageFile = document.getElementById('image').files[0];
 
   if (!imageFile) {
-    alert("📷 사진을 업로드하세요!");
-    return;
+    return alert('⚠️ Vui lòng chọn ảnh!');
   }
 
-  const formData = new FormData();
-  formData.append('image', imageFile);
-
   try {
-    // 1. Upload ảnh lên Imgur
-    const imgurRes = await fetch('/api/upload-imgur', {
+    // 1. Upload ảnh lên server
+    const formData = new FormData();
+    formData.append('image', imageFile);
+
+    const uploadRes = await fetch('/api/upload-image', {
       method: 'POST',
       body: formData
     });
-    const imgurData = await imgurRes.json();
 
-    if (!imgurData.imageUrl) {
-      alert("❌ 이미지 업로드 실패!");
-      return;
+    const uploadData = await uploadRes.json();
+
+    if (!uploadData.success) {
+      return alert('❌ Upload ảnh thất bại!');
     }
 
-    // 2. Gửi sản phẩm lên server
-    const response = await fetch('/api/products', {
+    const imageUrl = uploadData.imageUrl;
+
+    // 2. Gửi dữ liệu sản phẩm
+    const token = localStorage.getItem('token');
+
+    const productRes = await fetch('/api/products', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
       body: JSON.stringify({
         name,
         price,
         description,
-        image: imgurData.imageUrl,
+        quantity,
         category_id,
-        seller_id: localStorage.getItem('userId') || 1 // fallback nếu chưa đăng nhập
+        image: imageUrl
       })
     });
 
-    const result = await response.json();
-    if (response.ok) {
-      alert("✅ 상품이 성공적으로 등록되었습니다!");
+    const productData = await productRes.json();
+
+    if (productData.success) {
+      alert('✅ Thêm sản phẩm thành công!');
       window.location.reload();
     } else {
-      alert("❌ 등록 실패: " + result.message);
+      alert('❌ Thêm sản phẩm thất bại!');
     }
+
   } catch (err) {
     console.error(err);
-    alert("❌ 서버 오류 발생!");
+    alert('❌ Lỗi máy chủ!');
   }
 });

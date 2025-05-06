@@ -66,7 +66,7 @@ router.get('/pending', verify, (req, res) => {
     SELECT p.id, p.name, p.price, u.username AS seller_name
     FROM products p
     JOIN users u ON p.seller_id = u.id
-    WHERE p.approved = 1
+    WHERE p.approved = 0
     ORDER BY p.created_at DESC
   `;
 

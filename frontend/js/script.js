@@ -24,7 +24,8 @@ function renderProducts(products) {
     const div = document.createElement("div");
     div.classList.add("product");
 
-    const imageUrl = `https://web-nongsan.onrender.com/uploads/${product.image}`;
+    const imageUrl = `https://web-nongsan.onrender.com/uploads/${product.image.replace(/^\/+/, '')}`;
+
 
     div.innerHTML = `
       <img src="${imageUrl}" alt="${product.name}">

@@ -20,7 +20,7 @@ const upload = multer({ storage: storage });
 // Thêm sản phẩm mới (không cần verify, người bán thêm được)
 router.post('/', upload.single('image'), (req, res) => {
   const { name, price, description, category_id, seller_id } = req.body;
-  const image = req.file ? '/uploads/' + req.file.filename : null;
+  const image = req.file ? req.file.filename : null;//ảnh
 
   if (!name || !price || !category_id || !seller_id || !image) {
     return res.status(400).json({ message: 'Thiếu dữ liệu sản phẩm' });

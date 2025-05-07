@@ -1,3 +1,4 @@
+const verifyToken = require("../middleware/authenticate");
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
@@ -20,7 +21,7 @@ const upload = multer({ storage: storage });
 
 // Thêm sản phẩm mới (không cần verify, người bán thêm được)
 // Thêm sản phẩm mới dùng Imgur
-router.post("/", verifyToken, upload.single("image"), async (req, res) => {
+router.post("/", authenticate, upload.single("image"), async (req, res) => {
   try {
     const { name, price, description, category_id } = req.body;
     const image = req.file;

@@ -23,6 +23,9 @@ const upload = multer({ storage: storage });
 // Thêm sản phẩm mới dùng Imgur
 router.post("/", authenticate, upload.single("image"), async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     const { name, price, description, category_id } = req.body;
     const image = req.file;
 
@@ -37,10 +40,10 @@ router.post("/", authenticate, upload.single("image"), async (req, res) => {
 
     // Thêm sản phẩm vào DB
     const [result] = await db.query(
-      `INSERT INTO products (name, price, description, image, category_id, seller_id, approved)
-       VALUES (?, ?, ?, ?, ?, ?, 0)`,
-      [name, price, description, filename, category_id, req.user.id]
+      "INSERT INTO products (name, price, description, image, category_id, seller_id, approved) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [name, price, description, filename, category_id, req.user.id, 0]
     );
+    
 
     res.json({ message: "Đã thêm sản phẩm chờ duyệt." });
   } catch (err) {

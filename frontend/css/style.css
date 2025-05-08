@@ -76,9 +76,9 @@
   
   /* BANNER */
   .banner img {
-    width: 100%;
-    height: auto;
-    max-height: 300px;
+    width: 1500px;
+    height: 400px;
+    max-height: 100%;
     object-fit: cover;
     display: block;
     border-bottom: 3px solid #eee;

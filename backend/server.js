@@ -29,7 +29,7 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const adminProductRoutes = require('./routes/adminProducts');
-app.use('/api/products', require('./routes/products'));
+//app.use('/api/products', require('./routes/products'));
 
 
 // ✅ Sử dụng API routes

@@ -78,7 +78,7 @@ router.get('/pending', authenticate, (req, res) => {
 });
 
 // Duyệt sản phẩm (admin) – cần verify
-router.put('/approve/:id', verify, (req, res) => {
+router.put('/approve/:id', authenticate, (req, res) => {
   const id = req.params.id;
   const sql = 'UPDATE products SET approved = true WHERE id = ?';
 
@@ -92,7 +92,7 @@ router.put('/approve/:id', verify, (req, res) => {
 });
 
 // Xóa sản phẩm (admin) – cần verify
-router.delete('/:id', verify, (req, res) => {
+router.delete('/:id', authenticate, (req, res) => {
   const id = req.params.id;
   const sql = 'DELETE FROM products WHERE id = ?';
 

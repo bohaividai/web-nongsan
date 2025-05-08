@@ -34,16 +34,29 @@ router.post("/", authenticate, upload.single("image"), async (req, res) => {
     }
 
     // Lưu ảnh vào uploads/
-    const filename = Date.now() + "-" + image.originalname;
-    const fs = require("fs");
-    fs.writeFileSync(`uploads/${filename}`, image.buffer);
+    //const filename = Date.now() + "-" + image.originalname;
+    //const fs = require("fs");
+    //fs.writeFileSync(`uploads/${filename}`, image.buffer);
+    const filename = image.filename;
+
+const sql = `
+  INSERT INTO products (name, price, description, image, category_id, seller_id, approved)
+  VALUES (?, ?, ?, ?, ?, ?, 0)
+`;
+
+const values = [
+  name,
+  price,
+  description,
+  filename,
+  category_id,
+  req.user.id,
+];
+
+const [result] = await db.query(sql, values);
 
     // Thêm sản phẩm vào DB
-    const [result] = await db.query(
-      "INSERT INTO products (name, price, description, image, category_id, seller_id, approved) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [name, price, description, filename, category_id, req.user.id, 0]
-    );
-    
+  
 
     res.json({ message: "Đã thêm sản phẩm chờ duyệt." });
   } catch (err) {

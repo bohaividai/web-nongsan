@@ -59,7 +59,7 @@ router.get('/', (req, res) => {
 });
 
 // Lấy sản phẩm chờ duyệt (cho admin duyệt) – cần verify
-router.get('/pending', verify, (req, res) => {
+router.get('/pending', authenticate, (req, res) => {
   const sql = `
     SELECT p.id, p.name, p.price, u.username AS seller_name
     FROM products p

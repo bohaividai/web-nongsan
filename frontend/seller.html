@@ -8,11 +8,11 @@
 <body>
   <div class="seller-container">
     <h2>📦 새 제품 추가</h2>
-    <form id="productForm">
+    <form id="productForm" enctype="multipart/form-data">
       <input type="text" id="name" placeholder="제품명" required>
       <input type="text" id="price" placeholder="가격 (vd: 20000)" required>
       <textarea id="description" placeholder="상품 설명"></textarea>
-      <input type="file" id="image" accept="image/jpeg, image/png" />
+      <input type="file" name="image" id="image" accept="image/png, image/jpeg" required />
       <select id="category" required>
         <option value="">-- 종료선택 --</option>
         <option value="1">채소</option>

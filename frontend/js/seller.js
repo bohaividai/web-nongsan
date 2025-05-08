@@ -1,45 +1,32 @@
 document.getElementById('productForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById('name').value;
-  const description = document.getElementById('description').value;
-  const price = document.getElementById('price').value;
-  const image = document.getElementById('image').value;
-  const category = document.getElementById('category').value;
+  const form = e.target;
+  const formData = new FormData(form); // lấy tất cả input từ form
 
+  // Gửi kèm token nếu cần xác thực
   const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Bạn cần đăng nhập để đăng sản phẩm');
-    return;
-  }
 
   try {
     const response = await fetch('https://web-nongsan.onrender.com/api/products', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}` // nếu server cần xác thực
       },
-      body: JSON.stringify({
-        name,
-        description,
-        price,
-        image,
-        category
-        // Không cần gửi approved, server sẽ tự set = 0
-      })
+      body: formData // quan trọng: gửi body là formData
     });
 
-    const data = await response.json();
+    const result = await response.json();
 
     if (response.ok) {
-      alert('Sản phẩm đã được gửi. Vui lòng chờ admin duyệt.');
-      document.getElementById('productForm').reset();
+      alert(result.message);
+      form.reset();
     } else {
-      alert(data.error || 'Có lỗi xảy ra khi đăng sản phẩm');
+      alert('Có lỗi xảy ra khi đăng sản phẩm');
+      console.error(result);
     }
-  } catch (err) {
-    console.error('Lỗi:', err);
+  } catch (error) {
+    console.error('Lỗi kết nối:', error);
     alert('Không thể kết nối đến máy chủ');
   }
 });

@@ -1,6 +1,6 @@
 const express = require("express");
-const multer = require("multer");
 const fs = require("fs");
+const multer = require("multer");
 const path = require("path");
 const db = require("../db");
 const authenticate = require("../middleware/authenticate");
@@ -9,7 +9,7 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.post("/", authenticate, upload.single("image"), async (req, res) => {
+router.post("/", authenticate, upload.single("image"), (req, res) => {
   try {
     const { name, price, description, category_id } = req.body;
     const image = req.file;
@@ -19,17 +19,23 @@ router.post("/", authenticate, upload.single("image"), async (req, res) => {
     }
 
     const filename = Date.now() + "_" + image.originalname;
-    fs.writeFileSync("uploads/" + filename, image.buffer);
+    fs.writeFileSync(`uploads/${filename}`, image.buffer);
 
-    await db.query(
-      "INSERT INTO products (name, price, description, image, category_id, seller_id, approved) VALUES (?, ?, ?, ?, ?, ?, 0)",
-      [name, price, description, filename, category_id, req.user.id]
-    );
+    const sql = `
+      INSERT INTO products (name, price, description, image, category_id, seller_id, approved)
+      VALUES (?, ?, ?, ?, ?, ?, 0)
+    `;
+    const values = [name, price, description, filename, category_id, req.user.id];
 
-    res.json({ message: "Đã thêm sản phẩm chờ duyệt." });
-
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Lỗi thêm sản phẩm:", err);
+        return res.status(500).json({ message: "Lỗi server." });
+      }
+      res.json({ message: "Đã thêm sản phẩm chờ duyệt." });
+    });
   } catch (err) {
-    console.error("Lỗi thêm sản phẩm:", err);
+    console.error("Lỗi:", err);
     res.status(500).json({ message: "Lỗi server." });
   }
 });

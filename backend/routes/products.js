@@ -1,31 +1,16 @@
-const authenticate = require('../middleware/authenticate');
-const express = require('express');
+const express = require("express");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+const db = require("../db");
+const authenticate = require("../middleware/authenticate");
+
 const router = express.Router();
-const db = require('../db');
-const multer = require('multer');
-const path = require('path');
-const verify = require('../middleware/auth'); // ✅ phải có dòng này
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-// Cấu hình multer để upload ảnh sản phẩm
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const filename = Date.now() + path.extname(file.originalname);
-    cb(null, filename);
-  },
-});
-
-const upload = multer({ storage: storage });
-
-// Thêm sản phẩm mới (không cần verify, người bán thêm được)
-// Thêm sản phẩm mới dùng Imgur
 router.post("/", authenticate, upload.single("image"), async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
-
     const { name, price, description, category_id } = req.body;
     const image = req.file;
 
@@ -33,37 +18,24 @@ router.post("/", authenticate, upload.single("image"), async (req, res) => {
       return res.status(400).json({ message: "Thiếu ảnh sản phẩm." });
     }
 
-    // Lưu ảnh vào uploads/
-    //const filename = Date.now() + "-" + image.originalname;
-    //const fs = require("fs");
-    //fs.writeFileSync(`uploads/${filename}`, image.buffer);
-    const filename = image.filename;
+    const filename = Date.now() + "_" + image.originalname;
+    fs.writeFileSync("uploads/" + filename, image.buffer);
 
-const sql = `
-  INSERT INTO products (name, price, description, image, category_id, seller_id, approved)
-  VALUES (?, ?, ?, ?, ?, ?, 0)
-`;
-
-const values = [
-  name,
-  price,
-  description,
-  filename,
-  category_id,
-  req.user.id,
-];
-
-const [result] = await db.query(sql, values);
-
-    // Thêm sản phẩm vào DB
-  
+    await db.query(
+      "INSERT INTO products (name, price, description, image, category_id, seller_id, approved) VALUES (?, ?, ?, ?, ?, ?, 0)",
+      [name, price, description, filename, category_id, req.user.id]
+    );
 
     res.json({ message: "Đã thêm sản phẩm chờ duyệt." });
+
   } catch (err) {
     console.error("Lỗi thêm sản phẩm:", err);
     res.status(500).json({ message: "Lỗi server." });
   }
 });
+
+module.exports = router;
+
 
 
 // Lấy sản phẩm đã được duyệt (hiển thị ở trang index.html) – không cần verify

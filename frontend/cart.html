@@ -53,7 +53,7 @@
   // 👇 xử lý ảnh đúng
   const imageUrl = item.image.startsWith('http')
     ? item.image
-    : `http://localhost:3000/uploads/${item.image}`;
+    : `https://web-nongsan.onrender.com/uploads/${item.image}`;
 
   html += `
     <tr style="text-align:center; border-top:1px solid #ccc;">
@@ -100,7 +100,7 @@
   }, 0);
 
   try {
-    const res = await fetch('http://localhost:3000/api/orders', {
+    const res = await fetch('https://web-nongsan.onrender.com/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

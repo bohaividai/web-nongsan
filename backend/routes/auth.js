@@ -29,7 +29,7 @@ router.post("/signup", async (req, res) => {
             console.error("❌ Lỗi INSERT:", err);
             return res.status(500).json({ message: "Lỗi khi thêm người dùng vào CSDL" });
           }
-          res.status(200).json({ message: "Đăng ký thành công!" });
+          res.status(200).json({ message: "등록이 완료되었습니다!" });
         }
       );
     });
@@ -65,7 +65,7 @@ router.post("/login", (req, res) => {
     );
 
     res.status(200).json({
-      message: "Đăng nhập thành công!",
+      message: "로그인 성공!",
       token,
       user: {
         id: user.id,

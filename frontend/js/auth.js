@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (!res.ok) return alert(data.message);
 
-        alert('Đăng nhập thành công!');
+        alert('로그인 성공!');
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         window.location.href = 'home.html';

@@ -33,7 +33,7 @@ router.post("/", (req, res) => {
         return res.status(500).json({ message: "Lỗi lưu sản phẩm vào đơn" });
       }
 
-      res.json({ message: "Đặt hàng thành công!" });
+      res.json({ message: "주문 성공!" });
     });
   });
 });

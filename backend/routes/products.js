@@ -93,7 +93,7 @@ router.put('/approve/:id', authenticate, (req, res) => {
       console.error('❌ Lỗi khi duyệt sản phẩm:', err);
       return res.status(500).json({ message: 'Không thể duyệt sản phẩm.' });
     }
-    res.json({ message: '✅ Duyệt sản phẩm thành công!' });
+    res.json({ message: '✅ 제품 검색에 성공했습니다!' });
   });
 });
 
@@ -107,7 +107,7 @@ router.delete('/:id', authenticate, (req, res) => {
       console.error('❌ Lỗi khi xóa sản phẩm:', err);
       return res.status(500).json({ message: 'Không thể xóa sản phẩm.' });
     }
-    res.json({ message: '✅ Xóa sản phẩm thành công!' });
+    res.json({ message: '✅ 제품이 삭제되었습니다!' });
   });
 });
 
